@@ -11,11 +11,15 @@ import { useState } from 'react';
 import axios from 'axios';
 import UsernameInput from './sm-components/username-claim';
 import Mypage from './sm-components/myPage';
+import { useToast } from './ui/use-toast';
+import { Loader2 } from 'lucide-react';
 
 export default function CreatePage() {
+  const {toast} = useToast()
   const { data: session } = useSession();
   const { name, setName, userAvatar, setUserAvatar, projects, setProjects, skills, setSkills ,bio,setBio } = useFormContext();
   const [newSkill, setNewSkill] = useState<string>('');
+  const [dataSaving,setDataSaving] = useState<boolean>(false)
 
   const handleProjectChange = (index: number, field: keyof typeof projects[number], value: string) => {
     const newProjects = [...projects];
@@ -81,12 +85,16 @@ export default function CreatePage() {
           delete userData[key];
         }
       });
-  
-      await axios.post('/api/save-data', userData);
-      alert('User data saved successfully');
+
+      setDataSaving(true)
+       const saved =  await axios.post('/api/save-data', userData);
+       toast({description:"Saved"})
     } catch (error) {
       console.error('Error saving user data', error);
-      alert('Failed to save user data');
+      toast({variant:'destructive',description:"Error saving"})
+    }
+    finally{
+      setDataSaving(false)
     }
   };
   
@@ -172,7 +180,13 @@ export default function CreatePage() {
             ))}
           </div>
         </div>
-        <Button onClick={handleSubmit}>Save</Button>
+        <Button onClick={handleSubmit} disabled={dataSaving}>
+          {dataSaving?(
+            <Loader2 className='animate-spin' />
+          ):(
+            'save'
+          )}
+          </Button>
         <UsernameInput/>
         <Mypage/>
       </div>
