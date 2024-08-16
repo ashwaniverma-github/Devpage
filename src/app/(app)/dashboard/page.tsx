@@ -92,7 +92,7 @@ export default function Dashboard() {
                     {activeComponent === 'page' && <CreatePage />}
                     {activeComponent === 'style' && <Style />}
                 </div>
-                <div className="hidden md:block fixed top-20 mt-2 right-40">
+                <div className="hidden lg:block fixed top-20 mt-2 right-40 ">
                     <div className="mockup-phone size-90 ">
                         <div className="camera"></div>
                         <div className="display">

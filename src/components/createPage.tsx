@@ -100,8 +100,8 @@ export default function CreatePage() {
   
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 mx-2 rounded-lg">
-      <div className="flex flex-col p-4 md:p-10 rounded-lg space-y-4 bg-gray-100">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-5 mx-2 rounded-lg min-w-full ">
+      <div className="flex flex-col p-4  md:p-10 rounded-lg space-y-4 bg-gray-100">
         <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
           <div className="relative group cursor-pointer">
             <Avatar className="cursor-pointer">
