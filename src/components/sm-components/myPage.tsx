@@ -51,7 +51,7 @@ export default function Mypage() {
     return (
         <div>
             {username && (
-                <Link href={`http://localhost:3000/${username}`}>
+                <Link href={`https://www.devpage.in/${username}`}>
                     <Button className=" bg-blue-400 " > View mypage {'->'}</Button>
                 </Link>
             )}

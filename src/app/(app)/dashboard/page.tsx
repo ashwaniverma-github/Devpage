@@ -63,7 +63,7 @@ export default function Dashboard() {
                 setUsername(data.username)
 
                 const timestamp = new Date().getTime()
-                setIframeSrc(`http://localhost:3000/${data.username}?timestamp=${timestamp}`)
+                setIframeSrc(`https://www.devpage.in/${data.username}?timestamp=${timestamp}`)
             } else {
                 console.error('Failed to fetch username')
             }
