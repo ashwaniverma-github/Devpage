@@ -2,8 +2,24 @@
 import { Button } from "@/components/ui/button"
 import { signIn } from "next-auth/react"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import Loading from "@/app/loading"
 
 export default function Signin(){
+    const router = useRouter()
+    const {data:session,status} = useSession()
+
+
+    if(status=='loading'){
+        return <Loading/>
+    }
+
+    if(status=='authenticated'){
+        router.push('/dashboard')
+        return null
+    }
+
     const handleSignin = ()=>{
         signIn('google',{callbackUrl:'/dashboard'})
     }
