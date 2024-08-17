@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 export default function Mypage() {
     const { data: session, status } = useSession();
     const [username, setUsername] = useState<string | null>(null);
+    const pageUrl = process.env.PAGE_URL || ""
 
     useEffect(() => {
         if (status === 'loading') {
@@ -50,11 +51,11 @@ export default function Mypage() {
 
     return (
         <div>
-            {username && (
-                <Link href={`https://www.devpage.in/${username}`}>
-                    <Button className=" bg-blue-400 " > View mypage {'->'}</Button>
-                </Link>
-            )}
-        </div>
+    {username && (
+        <Link href={`${pageUrl}/${username}`} target="_blank" rel="noopener noreferrer">
+            <Button className="bg-blue-400">View mypage {'->'}</Button>
+        </Link>
+    )}
+</div>
     );
 }

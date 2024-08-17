@@ -13,6 +13,7 @@ export default function Dashboard() {
     const [activeComponent, setActiveComponent] = useState<string | null>('page')
     const [iframeSrc, setIframeSrc] = useState<string | null>(null)
     const [username, setUsername] = useState<string | null>(null)
+    const pageUrl = process.env.PAGE_URL||""
 
     useEffect(() => {
         if (status === 'loading') {
@@ -63,7 +64,7 @@ export default function Dashboard() {
                 setUsername(data.username)
 
                 const timestamp = new Date().getTime()
-                setIframeSrc(`https://www.devpage.in/${data.username}?timestamp=${timestamp}`)
+                setIframeSrc(`${pageUrl}/${data.username}?timestamp=${timestamp}`)
             } else {
                 console.error('Failed to fetch username')
             }
