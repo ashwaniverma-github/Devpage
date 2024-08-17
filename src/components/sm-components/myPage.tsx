@@ -2,6 +2,17 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import {motion} from 'framer-motion'
+
+const buttonVariants = {
+    hover: {
+      scale: 1.1,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      },
+    },
+  };
 
 export default function Mypage() {
     const { data: session, status } = useSession();
@@ -42,20 +53,26 @@ export default function Mypage() {
     }, [session, status]); // Add session and status as dependencies
 
     if (status === 'loading') {
-        return <div>Loading...</div>;
+        return <div className="text-black" >Loading...</div>;
     }
 
     if (!session) {
         return <div>You need to be logged in to view this page.</div>;
     }
 
-    return (
+    return <div>
         <div>
     {username && (
         <Link href={`${pageUrl}/${username}`} target="_blank" rel="noopener noreferrer">
-            <Button className="bg-blue-400">View mypage {'->'}</Button>
+            <motion.button  variants={buttonVariants} whileHover={'hover'} className="bg-blue-400 p-3 font-semibold text-black hover:bg-blue-500 rounded-md ">
+                
+                View mypage {'->'}
+
+            </motion.button>
         </Link>
     )}
-</div>
-    );
+        </div>
+        
+    </div>
+        
 }

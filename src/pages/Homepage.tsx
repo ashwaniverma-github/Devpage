@@ -8,11 +8,11 @@ export default function Homepage() {
     <div>
       <Navbar />
       <div className="pt-[64px]"> {/* Adjust this value to match your Navbar height */}
-        <div className="max-sm:block mt-5 sm:hidden">
+        <div className="max-md:block">
           <SmHomepage />
         </div>
-        <div className="hidden sm:block">
-          <MacbookScroll src={`/macwall (3).png`} />
+        <div className="hidden lg:block">
+          <MacbookScroll src={`https://www.devpage.in/elonmusk`} />
         </div>
       </div>
     </div>
