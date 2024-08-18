@@ -35,7 +35,7 @@ const headingVariants = {
   },
 };
 
-const buttonVariants = {
+export const buttonVariants = {
   hover: {
     scale: 1.1,
     transition: {
