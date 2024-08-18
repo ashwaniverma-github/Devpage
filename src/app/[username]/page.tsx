@@ -13,7 +13,7 @@ function ensureUrlProtocol(url: string | null | undefined): string | undefined {
 }
 
 async function fetchUser(username: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'; 
+  const baseUrl = process.env.PAGE_URL || 'http://localhost:3000'; 
   try {
     const response = await fetch(`${baseUrl}/api/generated-page-info`, {
       method: 'POST',
