@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.devpage.in
+
+# Sitemaps
+Sitemap: https://www.devpage.in/sitemap.xml
