@@ -71,6 +71,27 @@ export default function CreatePage() {
   };
 
   const handleSubmit = async () => {
+    const projectsWithMissingInfo = projects.some(project => {
+      const hasNameOrLink = project.name?.trim() || project.link?.trim();
+      const hasAvatar = project.avatar?.trim();
+  
+      // Check if there's a name or link without an avatar
+      const missingAvatar = hasNameOrLink && !hasAvatar;
+      
+      // Check if there's an avatar without a name or link
+      const missingNameOrLink = hasAvatar && !(project.name?.trim() && project.link?.trim());
+  
+      return missingAvatar || missingNameOrLink;
+    });
+  
+    if (projectsWithMissingInfo) {
+      toast({ 
+        variant: 'destructive', 
+        description: "Please ensure each project has a name, link, and avatar." 
+      });
+      return;
+    }
+  
     try {
       const userData: any = {
         email: session?.user?.email,
@@ -79,19 +100,18 @@ export default function CreatePage() {
         userAvatar: userAvatar?.trim() ? userAvatar : undefined,
         projects: projects.filter(
           (project) =>
-            project.name?.trim() && project.link?.trim() && project.avatar?.trim()
+            project.name?.trim() || project.link?.trim() || project.avatar?.trim()
         ),
         skills: skills.length ? skills : undefined,
         socials: socials,
       };
   
-    
       Object.keys(userData).forEach((key) => {
         if (userData[key] === undefined) {
           delete userData[key];
         }
       });
-
+  
       setDataSaving(true);
       await axios.post('/api/save-data', userData);
       toast({ description: "Saved" });
@@ -102,7 +122,7 @@ export default function CreatePage() {
       setDataSaving(false);
     }
   };
-
+  
   const renderInputField = () => {
     switch (selectedIcon) {
       case 'twitter':
@@ -241,7 +261,7 @@ export default function CreatePage() {
                   <AvatarImage src={project.avatar} alt={`Project ${index + 1} Avatar`} />
                 ) : (
                   <div className="flex items-center justify-center w-full h-full text-gray-400">
-                    <IconCamera />
+                    <IconCamera className=' cursor-pointer ' />
                   </div>
                 )}
               </Avatar>
