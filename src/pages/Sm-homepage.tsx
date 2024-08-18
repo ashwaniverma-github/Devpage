@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Mypage from '@/components/sm-components/myPage';
 
+const pageUrl = process.env.PAGE_URL
+
 const textVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -88,7 +90,7 @@ export default function SmHomepage() {
           <div className="display">
             <div className="artboard  artboard-demo phone-1  flex items-center justify-center overflow-hidden">
               <iframe 
-                src="https://www.devpage.in/elonmusk" 
+                src={`${pageUrl}/elonmusk`} 
                 className="w-full h-full  mr-7 sm:mr-0 overflow-hidden "
               ></iframe>
             </div>
