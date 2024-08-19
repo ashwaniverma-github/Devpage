@@ -12,6 +12,7 @@ export default function Homepage() {
     <div>
       <Navbar />
       <div className="pt-[64px]"> {/* Adjust this value to match your Navbar height */}
+        
         <div className="max-md:block">
           <SmHomepage />
         </div>

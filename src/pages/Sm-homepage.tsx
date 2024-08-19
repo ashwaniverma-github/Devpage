@@ -52,6 +52,19 @@ export default function SmHomepage() {
 
   return (
     <div className="flex pt-20 flex-col justify-center items-center min-h-screen bg-base-200 px-4 sm:px-6 lg:px-8 space-y-8">
+      <a
+          href="https://www.producthunt.com/posts/devpage-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-devpage&#0045;2"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=481253&theme=light"
+            alt="Devpage - Build&#0032;and&#0032;share&#0032;a&#0032;sleek&#0044;&#0032;one&#0045;page&#0032;portfolio&#0032; | Product Hunt"
+            style={{ width: '250px', height: '54px' }}
+            width="250"
+            height="54"
+          />
+        </a>
       <div className="max-w-3xl w-full text-center space-y-8">
         <motion.h1 
           className="text-6xl sm:text-5xl md:text-6xl font-bold tracking-tight"
