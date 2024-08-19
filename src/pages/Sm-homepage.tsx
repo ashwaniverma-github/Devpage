@@ -83,7 +83,13 @@ export default function SmHomepage() {
         </div>
         
       </div>
-      <h2 className="text-2xl font-bold">Like this One</h2>
+      <motion.h2 
+        className="text-2xl font-bold pb-3"
+        variants={headingVariants}
+        initial="hidden"
+        animate="visible"
+        >Like this One
+      </motion.h2>
       <div className="flex justify-center mt-12">
         <div className="mockup-phone border-primary w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
           <div className="camera"></div>
