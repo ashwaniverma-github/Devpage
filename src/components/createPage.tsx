@@ -298,6 +298,7 @@ export default function CreatePage() {
             ))}
           </div>
         </div>
+        <UsernameInput/>
         <Button  onClick={handleSubmit} disabled={dataSaving}>
           {dataSaving ? (
             <Loader2 className='animate-spin' />
@@ -306,7 +307,7 @@ export default function CreatePage() {
           )}
         </Button>
         </>)}
-        <UsernameInput/>
+        
         <Mypage/>
       </div>
     </div>
