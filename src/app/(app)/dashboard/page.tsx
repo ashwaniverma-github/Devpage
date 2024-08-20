@@ -101,7 +101,7 @@ export default function Dashboard() {
                                 {iframeSrc?(
                                     <iframe src={iframeSrc} className="w-full h-full" />
                                 ):(
-                                    <span>Deploy to view </span>
+                                    <span>Save before deploying</span>
                                 )}
                                 
                             </div>

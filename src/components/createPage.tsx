@@ -16,6 +16,7 @@ import UsernameInput from './sm-components/username-claim';
 import Mypage from './sm-components/myPage';
 import SkeletonLoader from './sm-components/skeleton';
 import { useEffect } from 'react';
+import { Trash } from 'lucide-react';
 
 export default function CreatePage() {
   const { toast } = useToast();
@@ -23,7 +24,6 @@ export default function CreatePage() {
   const { name, setName, userAvatar, setUserAvatar, projects, setProjects, socials, setSocials, skills, setSkills, bio, setBio , loading } = useFormContext();
   const [newSkill, setNewSkill] = useState<string>('');
   const [dataSaving, setDataSaving] = useState<boolean>(false);
-  // const [loading , setLoading] = useState<boolean>(true)
 
   const [selectedIcon, setSelectedIcon] = useState<string | null>('twitter');
 
@@ -47,6 +47,21 @@ export default function CreatePage() {
   const addProject = () => {
     setProjects([...projects, { name: '', link: '', avatar: null }]);
   };
+
+  const deleteProject = (projectId:string,index:number)=>{
+    try{
+      const response = axios.delete('/api/delete-project',{
+        data:{projectId}
+      })
+
+      const newProjects = projects.filter((_,i)=> i!== index)
+      setProjects(newProjects)
+      toast({description:'Project Deleted'})
+    }catch(err){
+      console.error(err)
+      toast({ variant:'destructive', description:"Error deleting"})
+    }
+  }
 
   const handleUserAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -228,7 +243,6 @@ export default function CreatePage() {
               onClick={() => setSelectedIcon('linkedin')} 
             />
           </div>
-
           {/* Render the selected input field */}
           {selectedIcon && (
             <div className="mt-4 flex items-center space-x-2">
@@ -274,6 +288,13 @@ export default function CreatePage() {
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
             </div>
+            <Button
+            //@ts-ignore
+                  onClick={() => deleteProject(project.id, index)}
+                  className="bg-red-400 hover:bg-red-500 flex items-center"
+                >
+                  <Trash className="" /> 
+                </Button>
           </div>
         ))}
         <div className="mt-4">

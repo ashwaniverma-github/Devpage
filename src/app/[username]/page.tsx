@@ -6,6 +6,7 @@ import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Twitter, Github, Instagram, Youtube, Linkedin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Loading from '../loading';
+import GitHubStats from '@/components/githubStats';
 
 function ensureUrlProtocol(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
@@ -38,7 +39,6 @@ async function fetchUser(username: string) {
 
 export default function UserPage({ params }: { params: { username: string } }) {
   const [user, setUser] = useState<any | null>(null);
-
   useEffect(() => {
     async function getUserData() {
       const userData = await fetchUser(params.username);
@@ -64,10 +64,12 @@ export default function UserPage({ params }: { params: { username: string } }) {
     linkedin: Linkedin,
   };
 
+  const githubUrl = user.socials[0]?.github
+
   return (
     <div className="container mx-auto p-5 bg-slate-300 min-h-screen max-w-full max-h-full">
       <div className="flex flex-col lg:flex-row">
-        {/* User Details */}
+        {/* User Details left-side */}
         <div className="w-full lg:w-2/5 lg:fixed lg:h-screen overflow-y-auto">
           <div className="bg-slate-20 flex flex-col items-center p-2">
             <motion.div whileHover={{ scale: 1.1 }} className="w-24 h-24 md:w-32 md:h-32 border rounded-full border-amber-400">
@@ -92,12 +94,12 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </motion.span>
               ))}
             </div>
-            <h1 className="text-lg md:text-xl font-bold text-center shadow-sm rounded-2xl p-2 font-mono">
+            <h1 className="text-lg md:text-xl font-bold text-center p-2 font-mono">
               Skills
             </h1>
 
             {/* Social Links */}
-            <div className="flex flex-wrap gap-4 mt-6">
+            <div className="flex flex-wrap gap-4 mt-2">
               {Object.keys(socialIcons).map((key) => {
                 const link = ensureUrlProtocol(user.socials[0][key as keyof typeof user.socials[0]] || undefined);
                 const IconComponent = socialIcons[key as keyof typeof socialIcons];
@@ -117,9 +119,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
               })}
             </div>
           </div>
+          <GitHubStats  githubUrl={githubUrl}/>
         </div>
 
-        {/* Projects */}
+        {/* Projects at right side */}
         <div className="w-full lg:w-3/5 lg:ml-auto mt-8 lg:mt-0 lg:pl-10">
           <div className="sticky top-0 z-10 bg-amber-100 shadow-2xl shadow-orange-300 p-2 mt-5 rounded-full text-center">
             <h2 className="text-xl md:text-2xl font-semibold">Projects</h2>
@@ -147,6 +150,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 </a>
               </motion.div>
             ))}
+            
           </div>
         </div>
       </div>
