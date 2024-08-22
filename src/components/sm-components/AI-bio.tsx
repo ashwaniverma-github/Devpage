@@ -66,7 +66,6 @@ export default function AIBio() {
                             loop:false,
                             deleteSpeed:Infinity,
                             cursor:''
-                            
                         }}/>
                     </div>
 
@@ -74,9 +73,9 @@ export default function AIBio() {
                         <button
                         
                          className='flex items-center  w-20 '
-                        onClick={copy} 
+                         onClick={copy} 
                          >
-                            <Copy size={34} textAnchor='copy'className='px-2' />
+                            <Copy size={34} textAnchor='copy' className="px-2" />
                             {copyText}
                         </button>
                     )}
