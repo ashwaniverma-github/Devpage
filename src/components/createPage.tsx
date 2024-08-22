@@ -324,7 +324,12 @@ export default function CreatePage() {
         <UsernameInput/>
         <Button  onClick={handleSubmit} disabled={dataSaving}>
           {dataSaving ? (
-            <Loader2 className='animate-spin' />
+            <div className='flex' >
+              <Loader2 className='animate-spin'/>
+              <p className='px-1' >Wait... patience is the key to success</p>
+            </div>
+            
+            
           ) : (
             'Save'
           )}
