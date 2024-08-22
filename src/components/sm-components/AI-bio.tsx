@@ -64,7 +64,8 @@ export default function AIBio() {
                             autoStart:true,
                             delay:30,
                             loop:false,
-                            deleteSpeed:Infinity
+                            deleteSpeed:Infinity,
+                            cursor:''
                             
                         }}/>
                     </div>
