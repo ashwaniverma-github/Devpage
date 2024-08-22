@@ -20,7 +20,7 @@ export async function POST(req: Request) {
                   "content": [
                       {
                           "type": "text",
-                          "text": input||"hola",
+                          "text": input || "hello",
                       },
                   ],
               },
