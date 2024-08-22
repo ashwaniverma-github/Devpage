@@ -67,8 +67,8 @@ export default function UserPage({ params }: { params: { username: string } }) {
   const githubUrl = user.socials[0]?.github
 
   return (
-    <div className="container mx-auto p-5 bg-slate-300 min-h-screen max-w-full max-h-full">
-      <div className="flex flex-col lg:flex-row">
+    <div className="container mx-auto py-4  bg-slate-300 min-h-screen max-w-full max-h-full">
+      <div className="flex flex-col lg:flex-row ">
         {/* User Details left-side */}
         <div className="w-full lg:w-2/5 lg:fixed lg:h-screen overflow-y-auto">
           <div className="bg-slate-20 flex flex-col items-center p-2">
@@ -77,7 +77,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
                 <AvatarImage src={user.profile} />
               </Avatar>
             </motion.div>
-            <h1 className="text-2xl md:text-3xl font-extrabold font-mono p-4">{user.name}</h1>
+            <h1 className="text-2xl md:text-3xl font-extrabold font-mono p-2">{user.name}</h1>
             <p className="px-5 text-base md:text-lg font-semibold font-sans text-wrap text-center">
               {user.bio}
             </p>

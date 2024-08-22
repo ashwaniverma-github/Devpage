@@ -17,7 +17,7 @@ export default function GitHubStats({ githubUrl }: any) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <div className="text-center mt-6 relative max-w-full">
+            <div className="text-center mt-4 relative max-w-full">
                 <motion.div 
                     className="relative w-full max-w-xs md:max-w-sm lg:max-w-md"
                     whileHover={{ scale: 1.05, rotate: 2 }}
@@ -30,7 +30,7 @@ export default function GitHubStats({ githubUrl }: any) {
                         className="w-full h-auto border p-1 rounded-md"
                     />
                 </motion.div>
-                <p className="text-center text-sm pt-1 font-semibold font-mono">GitHub Contributions</p>
+                <p className="text-center text-sm pt-2 font-semibold font-mono">GitHub Contributions</p>
             </div>
         </motion.div>
     );

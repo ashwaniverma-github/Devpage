@@ -17,6 +17,7 @@ import Mypage from './sm-components/myPage';
 import SkeletonLoader from './sm-components/skeleton';
 import { useEffect } from 'react';
 import { Trash } from 'lucide-react';
+import AIBio from './sm-components/AI-bio';
 
 export default function CreatePage() {
   const { toast } = useToast();
@@ -217,6 +218,7 @@ export default function CreatePage() {
           />
         </div>
         <Textarea placeholder="I love HTML" value={bio} onChange={(e) => setBio(e.target.value)} />
+          <AIBio/>
         
         {/* Social Media Links */}
         <div className="mt-4">
