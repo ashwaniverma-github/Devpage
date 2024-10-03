@@ -7,13 +7,14 @@ import { Twitter, Github, Instagram, Youtube, Linkedin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Loading from '../loading';
 import GitHubStats from '@/components/githubStats';
+import CentreUpslider from '@/paid-pages/centre-upslider';
 
 function ensureUrlProtocol(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
   return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
 }
 
-async function fetchUser(username: string) {
+async function fetchUser(username: string) { 
   const baseUrl = process.env.PAGE_URL || ''; 
   try {
     const response = await fetch(`${baseUrl}/api/generated-page-info`, {
@@ -43,7 +44,7 @@ export default function UserPage({ params }: { params: { username: string } }) {
     async function getUserData() {
       const userData = await fetchUser(params.username);
       if (userData) {
-        setUser(userData);
+        setUser(userData); 
       } else {
         notFound();
       }
@@ -65,6 +66,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
   };
 
   const githubUrl = user.socials[0]?.github
+
+  if(user?.style?.pageStyle == 'Center Upslider'){
+    return <CentreUpslider user={user} socials={user.socials} />
+  }
 
   return (
     <div className="container mx-auto py-4  bg-slate-300 min-h-screen max-w-full max-h-full">

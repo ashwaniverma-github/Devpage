@@ -19,6 +19,7 @@ model User{
   skills      String[]
   projects    Project[]
   socials     Social[]
+  style      Style?
   createdAt   DateTime @default(now())
 
 }
@@ -26,6 +27,7 @@ model User{
 model Project {
   id      String @id @default(uuid())
   name    String
+  description String?
   link    String
   avatar  String?
   userId  String
@@ -43,3 +45,10 @@ model Social{
   user      User @relation(fields:[userId],references: [id])
 }
 
+
+model Style {
+  id        String  @id @default(uuid())
+  pageStyle String? 
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id])
+}
