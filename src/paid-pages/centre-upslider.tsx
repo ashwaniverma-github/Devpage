@@ -132,7 +132,7 @@ function ProjectsList({ projects }: { projects: any[] }) {
                   >
                     <iframe
                       src={project.link}
-                      className="absolute inset-0 w-full h-full rounded-xl border-2"
+                      className="absolute inset-0 w-full h-full rounded-xl border-2 hidden sm:block "
                       title={project.name}
                       style={{ transform: 'scale(0.5)', transformOrigin: 'bottom right' }}
                     />
