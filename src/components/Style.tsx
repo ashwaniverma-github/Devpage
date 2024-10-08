@@ -28,7 +28,7 @@ export default function Style() {
         toast({description:"Style updated"})
       } else {
         console.error('Failed to save style.');
-        toast({description:'error updatng style'})
+        toast({description:'error updating style'})
       }
     } catch (error) {
       console.error('Error:', error);
