@@ -68,14 +68,16 @@ function ProjectsList({ projects }: { projects: any[] }) {
   return (
     <div className="space-y-8 mt-4">
       {projects.map((project) => (
-        <a
+        <motion.a
           href={project.link}
           target="_blank"
           rel="noopener noreferrer"
           key={project.id}
           className="block"
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
-          <div className="relative border-b border-gray-200 pb-6">
+          <div className="relative border-b border-gray-200 pb-6 hover:shadow-md rounded-lg p-4 transition-all duration-300">
             <div className="flex justify-between items-start">
               <h3 className="text-xl sm:text-2xl font-semibold">{project.name}</h3>
               <ExternalLink size={20} className="text-gray-500" />
@@ -84,7 +86,7 @@ function ProjectsList({ projects }: { projects: any[] }) {
               {project.description}
             </p>
           </div>
-        </a>
+        </motion.a>
       ))}
     </div>
   );
