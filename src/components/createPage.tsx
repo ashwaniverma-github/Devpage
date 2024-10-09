@@ -49,20 +49,29 @@ export default function CreatePage() {
     setProjects([...projects, { name: '', link: '', description:'', avatar: null }]);
   };
 
-  const deleteProject = (projectId:string,index:number)=>{
-    try{
-      const response = axios.delete('/api/delete-project',{
-        data:{projectId}
-      })
-
-      const newProjects = projects.filter((_,i)=> i!== index)
-      setProjects(newProjects)
-      toast({description:'Project Deleted'})
-    }catch(err){
-      console.error(err)
-      toast({ variant:'destructive', description:"Error deleting"})
+  const deleteProject = (projectId: string | undefined, index: number) => {
+    if (!projectId) {
+      // If projectId is empty, simply remove the project from the UI without sending a delete request
+      const newProjects = projects.filter((_, i) => i !== index);
+      setProjects(newProjects);
+      toast({ description: 'Project removed locally' });
+      return;
     }
-  }
+  
+    // Proceed to send the delete request if projectId exists
+    try {
+      axios.delete('/api/delete-project', {
+        data: { projectId },
+      });
+      const newProjects = projects.filter((_, i) => i !== index);
+      setProjects(newProjects);
+      toast({ variant:'destructive',  description: 'Project Deleted' });
+    } catch (err) {
+      console.error(err);
+      toast({ variant: 'destructive', description: 'Error deleting' });
+    }
+  };
+  
 
   const handleUserAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,7 +143,6 @@ export default function CreatePage() {
       setDataSaving(true);
       await axios.post('/api/save-data', userData);
       toast({ description: "Saved" });
-      console.log(userData)
     } catch (error) {
       console.error('Error saving user data', error);
       toast({ variant: 'destructive', description: "Error saving" });

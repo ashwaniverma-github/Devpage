@@ -8,7 +8,9 @@ export async function DELETE(req:Request) {
         return new Response(JSON.stringify({err:"unauthorized"}))
     }
     const {projectId} = await req.json()
+    
     try{
+        
         const project = await prisma.project.findUnique({
             where:{id:projectId},
             include:{user:true}
