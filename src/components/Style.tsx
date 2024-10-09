@@ -24,11 +24,9 @@ export default function Style() {
       });
 
       if (response.ok) {
-        console.log('Style saved successfully!');
         toast({description:"Style updated"})
       } else {
-        console.error('Failed to save style.');
-        toast({description:'error updating style'})
+        toast({ variant:'destructive', description:'error updating style'})
       }
     } catch (error) {
       console.error('Error:', error);

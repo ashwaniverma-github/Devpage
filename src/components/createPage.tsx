@@ -46,7 +46,7 @@ export default function CreatePage() {
   };
 
   const addProject = () => {
-    setProjects([...projects, { name: '', link: '', avatar: null }]);
+    setProjects([...projects, { name: '', link: '', description:'', avatar: null }]);
   };
 
   const deleteProject = (projectId:string,index:number)=>{
@@ -90,12 +90,15 @@ export default function CreatePage() {
     const projectsWithMissingInfo = projects.some(project => {
       const hasNameOrLink = project.name?.trim() || project.link?.trim();
       const hasAvatar = project.avatar?.trim();
+      const hasDescription = project.description?.trim();
   
       // Check if there's a name or link without an avatar
       const missingAvatar = hasNameOrLink && !hasAvatar;
       
       // Check if there's an avatar without a name or link
       const missingNameOrLink = hasAvatar && !(project.name?.trim() && project.link?.trim());
+
+      const missingDescription = hasNameOrLink && !hasDescription
   
       return missingAvatar || missingNameOrLink;
     });
@@ -103,7 +106,7 @@ export default function CreatePage() {
     if (projectsWithMissingInfo) {
       toast({ 
         variant: 'destructive', 
-        description: "Please ensure each project has a name, link, and avatar." 
+        description: "Please ensure each project has a name, link, avatar and description ." 
       });
       return;
     }
@@ -116,7 +119,7 @@ export default function CreatePage() {
         userAvatar: userAvatar?.trim() ? userAvatar : undefined,
         projects: projects.filter(
           (project) =>
-            project.name?.trim() || project.link?.trim() || project.avatar?.trim()
+            project.name?.trim() || project.link?.trim() || project.avatar?.trim() || project.description?.trim()
         ),
         skills: skills.length ? skills : undefined,
         socials: socials,
@@ -131,6 +134,7 @@ export default function CreatePage() {
       setDataSaving(true);
       await axios.post('/api/save-data', userData);
       toast({ description: "Saved" });
+      console.log(userData)
     } catch (error) {
       console.error('Error saving user data', error);
       toast({ variant: 'destructive', description: "Error saving" });
@@ -257,48 +261,69 @@ export default function CreatePage() {
         </div>
 
         <Button onClick={addProject}>Add Project</Button>
-        {projects.map((project, index) => (
-          <div key={index} className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-2 mt-4">
-            <Input
-              placeholder="Project Name"
-              value={project.name}
-              onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
-              className="flex-1"
-            />
-            <Input
-              placeholder="Project Link"
-              value={project.link}
-              onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
-              className="flex-1"
-            />
-            <div className="relative group">
-              <Avatar className="cursor-pointer">
-                {project.avatar ? (
-                  <AvatarImage src={project.avatar} alt={`Project ${index + 1} Avatar`} />
-                ) : (
-                  <div className="flex items-center justify-center w-full h-full text-gray-400">
-                    <IconCamera className=' cursor-pointer ' />
+            {projects.map((project, index) => (
+              <React.Fragment key={index}>
+                <div className="flex flex-col space-y-4 mt-4">
+                  <div className="flex flex-col space-y-4">
+                    {/* Project Name and Description */}
+                    <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-2">
+                      <Input
+                        placeholder="Project Name"
+                        value={project.name}
+                        onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
+                        className="flex-1"
+                      />
+                      <div className="flex-none flex space-x-2">
+                        <div className="relative group">
+                          <Avatar className="cursor-pointer">
+                            {project.avatar ? (
+                              <AvatarImage src={project.avatar} alt={`Project ${index + 1} Avatar`} />
+                            ) : (
+                              <div className="flex items-center justify-center w-full h-full text-gray-400">
+                                <IconCamera className="cursor-pointer" />
+                              </div>
+                            )}
+                          </Avatar>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.target.files?.[0]) handleProjectAvatarChange(index, e.target.files[0]);
+                            }}
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                          />
+                        </div>
+                        <Button
+                        //@ts-ignore
+                          onClick={() => deleteProject(project.id, index)}
+                          className="bg-red-400 hover:bg-red-500 flex items-center"
+                        >
+                          <Trash className="" /> 
+                        </Button>
+                      </div>
+                    </div>
+                    <Input
+                      placeholder="Project Description"
+                      value={project.description}
+                      onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
+                      className="w-full"
+                    />
                   </div>
+                  {/* Project Link */}
+                  <Input
+                    placeholder="Project Link"
+                    value={project.link}
+                    onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                {/* Add a horizontal rule after each project except the last one */}
+                {index < projects.length - 1 && (
+                  <hr className="my-6 border-t border-gray-300" />
                 )}
-              </Avatar>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) handleProjectAvatarChange(index, e.target.files[0]);
-                }}
-                className="absolute inset-0 opacity-0 cursor-pointer"
-              />
-            </div>
-            <Button
-            //@ts-ignore
-                  onClick={() => deleteProject(project.id, index)}
-                  className="bg-red-400 hover:bg-red-500 flex items-center"
-                >
-                  <Trash className="" /> 
-                </Button>
-          </div>
-        ))}
+              </React.Fragment>
+            ))}
+
         <div className="mt-4">
           <h3 className="font-semibold mb-2">Skills</h3>
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2 mb-4">

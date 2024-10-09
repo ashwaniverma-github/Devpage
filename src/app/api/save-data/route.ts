@@ -35,6 +35,7 @@ export async function POST(req: Request) {
             name: project.name,
             avatar: project.avatar,
             link: project.link,
+            description:project.description,
             userId: user.id,
           },
         });

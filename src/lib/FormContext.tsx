@@ -8,6 +8,7 @@ interface Project {
   name: string;
   link: string;
   avatar: string | null;
+  description:string;
 }
 
 interface Social {
@@ -55,7 +56,7 @@ export const FormProvider = ({ children }: FormProviderProps) => {
   const [name, setName] = useState<string>('');
   const [bio, setBio] = useState<string>('');
   const [userAvatar, setUserAvatar] = useState<string>('');
-  const [projects, setProjects] = useState<Project[]>([{ name: '', link: '', avatar: null }]);
+  const [projects, setProjects] = useState<Project[]>([{ name: '', link: '', description:'' , avatar: null }]);
   const [socials, setSocials] = useState<Social>({
     twitter: '',
     linkedin: '',
