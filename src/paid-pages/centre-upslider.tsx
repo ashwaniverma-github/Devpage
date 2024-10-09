@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Code, Copy, ExternalLink } from 'lucide-react';
 
 export const CentreUpslider = ({ user, socials }: { user: any; socials: any }) => {
@@ -43,14 +43,9 @@ function Hero({ user }: { user: any }) {
   }, [text, isDeleting, loopNum, typingSpeed]);
 
   return (
-    <motion.div 
-      className="flex flex-col items-start"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="flex flex-col items-start">
       <h1 className="font-semibold mb-6 text-2xl sm:text-3xl">{user.name}</h1>
-      <div className="w-full h-40 sm:h-64 mb-6 flex items-center justify-center">
+      <div className="w-full h-40 sm:h-64 m-6 flex items-center justify-center">
         <motion.div
           className="text-4xl sm:text-6xl md:text-7xl font-mono font-bold whitespace-nowrap border-r-4 border-current pr-2 inline-block"
           animate={{ opacity: 1 }}
@@ -63,49 +58,24 @@ function Hero({ user }: { user: any }) {
       <div className="bg-gray-300 w-full h-px mb-4"></div>
       <div className="flex items-center space-x-2 mb-4">
         <h2 className="font-serif text-xl sm:text-2xl mt-2">My Creations</h2>
-        <Code size={24} />
+        <Code size={24}  className='mt-3' />
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 function ProjectsList({ projects }: { projects: any[] }) {
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setMousePos({ x, y });
-  };
-
   return (
-    <motion.div 
-      className="space-y-8 mt-4"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-    >
-      {projects.map((project, index) => (
-        <motion.a
+    <div className="space-y-8 mt-4">
+      {projects.map((project) => (
+        <a
           href={project.link}
           target="_blank"
           rel="noopener noreferrer"
           key={project.id}
           className="block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
         >
-          <motion.div
-            className="relative border-b border-gray-200 pb-6"
-            onMouseEnter={() => setHoveredProject(project.id)}
-            onMouseLeave={() => setHoveredProject(null)}
-            onMouseMove={handleMouseMove}
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-          >
+          <div className="relative border-b border-gray-200 pb-6">
             <div className="flex justify-between items-start">
               <h3 className="text-xl sm:text-2xl font-semibold">{project.name}</h3>
               <ExternalLink size={20} className="text-gray-500" />
@@ -113,40 +83,12 @@ function ProjectsList({ projects }: { projects: any[] }) {
             <p className="text-base sm:text-lg mt-4">
               {project.description}
             </p>
-
-            <AnimatePresence>
-              {hoveredProject === project.id && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="absolute inset-0 p-4 z-50 flex justify-center items-center"
-                >
-                  <motion.div
-                    className="relative w-full max-w-lg"
-                    style={{ paddingBottom: '56.25%' }}
-                    animate={{
-                      x: mousePos.x / 10 - 50,
-                      y: mousePos.y / 10 - 50,
-                    }}
-                  >
-                    <iframe
-                      src={project.link}
-                      className="absolute inset-0 w-full h-full rounded-xl border-2 hidden sm:block "
-                      title={project.name}
-                      style={{ transform: 'scale(0.5)', transformOrigin: 'bottom right' }}
-                    />
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        </motion.a>
+          </div>
+        </a>
       ))}
-    </motion.div>
+    </div>
   );
 }
-
 
 function Footer({ user, socials }: { user: any; socials: any }) {
   const [email, setEmail] = useState("");
@@ -173,49 +115,21 @@ function Footer({ user, socials }: { user: any; socials: any }) {
   };
 
   return (
-    <motion.div 
-      className="py-8 mt-4 text-gray-700"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-    >
+    <div className="py-8 mt-4 text-gray-700">
       <div className="w-full bg-gray-300 h-px mb-6"></div>
       <div className="flex flex-col items-start">
         <h2 className="text-xl sm:text-2xl mb-4">Get in touch</h2>
 
-        <motion.div 
-          className="flex items-center border border-gray-300 rounded-lg p-3 w-full mb-6 mt-2"
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: 'spring', stiffness: 400 }}
-        >
+        <div className="flex items-center border border-gray-300 rounded-lg p-3 w-full mb-6 mt-2">
           <p className="flex-grow font-semibold truncate mr-2">{email}</p>
-          <motion.button
+          <button
             onClick={copyToClipboard}
             className="text-blue-600 hover:text-blue-800 flex items-center space-x-1"
-            whileTap={{ scale: 0.95 }}
           >
-            <AnimatePresence>
-              {copied ? (
-                <motion.span
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                >
-                  Copied!
-                </motion.span>
-              ) : (
-                <motion.span
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                >
-                  Copy
-                </motion.span>
-              )}
-            </AnimatePresence>
+            {copied ? 'Copied!' : 'Copy'}
             <Copy size={18} />
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
 
         <div className="flex flex-wrap gap-4 mt-2">
           {socials && socials.length > 0 && socials[0] && (
@@ -242,7 +156,7 @@ function Footer({ user, socials }: { user: any; socials: any }) {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
