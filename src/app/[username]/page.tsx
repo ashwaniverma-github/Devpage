@@ -106,7 +106,8 @@ export default function UserPage({ params }: { params: { username: string } }) {
             {/* Social Links */}
             <div className="flex flex-wrap gap-4 mt-2">
               {Object.keys(socialIcons).map((key) => {
-                const link = ensureUrlProtocol(user.socials[0][key as keyof typeof user.socials[0]] || undefined);
+                const social = user.socials && user.socials[0];  // Ensure user.socials[0] exists
+                const link = social ? ensureUrlProtocol(social[key as keyof typeof social] || '') : ''; // Check if social exists before accessing its properties
                 const IconComponent = socialIcons[key as keyof typeof socialIcons];
                 return link ? (
                   <motion.a
