@@ -77,7 +77,7 @@ export const FormProvider = ({ children }: FormProviderProps) => {
           setBio(userData.bio || '');
           setUserAvatar(userData.profile || '');
           setProjects(userData.projects || []);
-          setSocials(userData.socials[0] || {
+          setSocials((userData.socials && userData.socials[0]) ? userData.socials[0] : {
             twitter: '',
             linkedin: '',
             github: '',
