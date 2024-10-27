@@ -53,6 +53,13 @@ export default function Style() {
           onSelect={() => handlePageSelection('Center Upslider')}
           img='/center-upslider.png'
         />
+        <Page
+          title="Tri Section"
+          isSelected={selectedPage === 'Tri Section'}
+          loading={loading}
+          onSelect={() => handlePageSelection('Tri Section')}
+          img='/tri-section.png'
+        />
       </div>
     </div>
   );

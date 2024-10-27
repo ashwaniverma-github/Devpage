@@ -33,6 +33,13 @@ const config = {
       },
     },
     extend: {
+      fontSize:{
+        '10xl': '10rem',
+        '11xl':'11rem',
+        '12xl':'12rem',
+        
+
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

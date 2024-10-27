@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import Loading from '../loading';
 import GitHubStats from '@/components/githubStats';
 import CentreUpslider from '@/paid-pages/centre-upslider';
+import { TriSection } from '@/paid-pages/tri-section';
 
 function ensureUrlProtocol(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
@@ -70,6 +71,10 @@ export default function UserPage({ params }: { params: { username: string } }) {
   if(user?.style?.pageStyle == 'Center Upslider'){
     return <CentreUpslider user={user} socials={user.socials} />
   }
+  if(user?.style?.pageStyle == 'Tri Section'){
+    return <TriSection user={user} socials={user.socials} />
+  }
+  
 
   return (
     <div className="container mx-auto py-4  bg-slate-300 min-h-screen max-w-full max-h-full">
