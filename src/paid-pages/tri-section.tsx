@@ -100,10 +100,10 @@ function Hero({
               hover: {
                 color: '#ffffff',
                 transition: { duration: 0.3 },
-              },
+              }
             }}
           >
-            <span className="relative z-10">Let's connect</span>
+            <span className="relative z-10">Let&apos;s connect</span>
             <motion.div
               className="absolute inset-0 bg-black"
               initial={{ y: '100%' }}
