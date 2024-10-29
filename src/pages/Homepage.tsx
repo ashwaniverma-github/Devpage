@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { buttonVariants } from "./Sm-homepage";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/sm-components/footer";
 
 export default function Homepage() {
   return (
@@ -43,6 +44,7 @@ export default function Homepage() {
             </div>
           </div>
         </div>
+        <Footer/>
       </div>
     </div>
   );
