@@ -10,7 +10,9 @@ import Footer from "@/components/sm-components/footer";
 
 export default function Homepage() {
   return (
+    
     <div>
+      <meta name="google-adsense-account" content="ca-pub-6660595040751061"></meta>
       <Navbar />
       <div className="pt-[64px]"> {/* Adjust this value to match your Navbar height */}
         
