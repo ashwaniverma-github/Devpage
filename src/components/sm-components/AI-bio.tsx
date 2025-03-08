@@ -1,21 +1,23 @@
 import { useRef, useState } from 'react';
 import { Input } from '../ui/input';
 import axios from 'axios';
-import { WandSparkles } from 'lucide-react';
+import { Loader, Loader2Icon, SplineIcon, WandSparkles } from 'lucide-react';
 import Typewriter from 'typewriter-effect'
 import { Copy } from 'lucide-react';
-
 export default function AIBio() {
     const modalRef = useRef<HTMLDialogElement>(null);
     const [input, setInput] = useState('');
     const [response, setResponse] = useState('');
     const[copyText,setCopyText]  =useState('')
+    const [loading , setLoading] = useState(false)
 
     const generate = async (input: string) => {
         try {
+            setLoading(true)
             const result = await axios.post('/api/ai-bio', { input });
             const msg = result.data.content || 'No response from AI';
             setResponse(msg);
+            setLoading(false)
         } catch (error) {
             console.error("Error generating bio:", error);
             setResponse('An error occurred while generating the bio.');
@@ -53,8 +55,13 @@ export default function AIBio() {
                         onClick={() => generate(input)} 
                         className="text-sm  btn"
                     >
-                        Generate 
-                        <WandSparkles size={16} />
+                        Generate
+                        {loading?(
+                            <Loader className=' loading-spinner' />
+                        ):(
+                            <WandSparkles size={16} />
+                        )} 
+                        
                     </button>
 
                     <div className='py-2' >

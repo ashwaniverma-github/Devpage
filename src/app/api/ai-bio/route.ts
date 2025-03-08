@@ -1,37 +1,45 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const api = process.env.CLAUDE_API;
+const apiKey = process.env.GOOGLE_STUDIO_API;
 
-const anthropic = new Anthropic({
-    apiKey: api,
+const genAI = new GoogleGenerativeAI(apiKey || "");
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.0-flash",
+  generationConfig: {
+    temperature: 0,
+    maxOutputTokens: 1000,
+  },
 });
 
 export async function POST(req: Request) {
   const { input } = await req.json();
-  try {
-      const msg = await anthropic.messages.create({
-          model: "claude-3-5-sonnet-20240620",
-          max_tokens: 1000,
-          temperature: 0,
-          system: "You are an expert at writing concise 2 liner  bios for developers. When the user provides their skills and interests, be specific. if input is empty response please give some input",
-          messages: [
-              {
-                  "role": "user",
-                  "content": [
-                      {
-                          "type": "text",
-                          "text": input || "hello",
-                      },
-                  ],
-              },
-          ],
-      });
 
-      //@ts-ignore
-      const content = msg.content[0]?.text || 'No content available';
-      return new Response(JSON.stringify({ content }), { status: 200 });
+  // Handle empty input immediately
+  if (!input?.trim()) {
+    return new Response(
+      JSON.stringify({ content: "Please provide some input about your skills and interests." }),
+      { status: 200 }
+    );
+  }
+
+  try {
+    const prompt = `You are an expert developer bio writer. Create a concise two-line bio using these details:
+Skills/Interests: ${input}
+Guidelines:
+- Focus on specific technical skills and passions
+- Keep it professional but engaging
+- Maximum 2 short lines`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const content = response.text();
+
+    return new Response(JSON.stringify({ content }), { status: 200 });
   } catch (err) {
-      console.error(err);
-      return new Response(JSON.stringify({ error: 'Failed to generate bio' }), { status: 500 });
+    console.error(err);
+    return new Response(
+      JSON.stringify({ error: "Failed to generate bio" }),
+      { status: 500 }
+    );
   }
 }

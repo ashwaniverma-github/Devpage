@@ -230,7 +230,7 @@ export default function CreatePage() {
           />
         </div>
         <Textarea placeholder="I love HTML" value={bio} onChange={(e) => setBio(e.target.value)} />
-          {/* <AIBio/> */}
+          <AIBio/>
         
         {/* Social Media Links */}
         <div className="mt-4">
