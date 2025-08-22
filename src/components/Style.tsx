@@ -37,7 +37,9 @@ export default function Style() {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-xl font-semibold text-center pb-6 md:pb-8 flex justify-center ">Choose your Page <p className='font-bold mx-2' >(beta)</p> </h2>
+      <h2 className="text-2xl font-bold text-white text-center pb-6 md:pb-8 flex justify-center items-center">
+        Choose your Page <span className='font-bold mx-2 text-gray-400 text-sm'>(beta)</span>
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Page
           title="Default"
@@ -78,18 +80,18 @@ function Page({ title, isSelected, loading, onSelect ,img}: PageProps) {
     <div className="cursor-pointer flex flex-col items-center" onClick={onSelect}>
       <motion.div
         className={`p-2 shadow-lg rounded-lg w-full 
-          ${isSelected ? 'bg-yellow-500' : 'bg-slate-500'} 
+          ${isSelected ? 'bg-gray-600' : 'bg-gray-800'} 
           ${loading && isSelected ? 'animate-pulse' : ''}
         `}
         whileHover={{
           scale: 1.05,
-          backgroundColor: isSelected ? "#fbbf24" : "#fcd34d",
+          backgroundColor: isSelected ? "#4b5563" : "#374151",
         }}
       >
         <img src={img} alt="" className="w-full h-auto rounded-md" />
       </motion.div>
       <div>
-        <h1 className='font-semibold p-4 text-center'>{title}</h1>
+        <h1 className='font-semibold p-4 text-center text-white'>{title}</h1>
       </div>
     </div>
   );

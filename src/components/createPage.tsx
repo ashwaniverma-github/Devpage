@@ -1,33 +1,33 @@
 'use client';
-import React from 'react';
-import { Twitter, Github, Instagram, Youtube, Linkedin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Twitter, Github, Instagram, Youtube, Linkedin, User, FileText, Code, Globe, Plus, Trash2, Wand2, CheckCircle, ArrowRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { Textarea } from './ui/textarea';
 import { Avatar, AvatarImage } from './ui/avatar';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { useFormContext } from '@/lib/FormContext'; // Adjust the path as necessary
+import { useFormContext } from '@/lib/FormContext';
 import { IconCamera } from '@tabler/icons-react';
-import { useState } from 'react';
 import axios from 'axios';
 import { useToast } from './ui/use-toast';
 import { Loader2 } from 'lucide-react';
 import UsernameInput from './sm-components/username-claim';
 import Mypage from './sm-components/myPage';
 import SkeletonLoader from './sm-components/skeleton';
-import { useEffect } from 'react';
-import { Trash } from 'lucide-react';
 import AIBio from './sm-components/AI-bio';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CreatePage() {
   const { toast } = useToast();
   const { data: session } = useSession();
-  const { name, setName, userAvatar, setUserAvatar, projects, setProjects, socials, setSocials, skills, setSkills, bio, setBio , loading } = useFormContext();
+  const { name, setName, userAvatar, setUserAvatar, projects, setProjects, socials, setSocials, skills, setSkills, bio, setBio, loading } = useFormContext();
   const [newSkill, setNewSkill] = useState<string>('');
   const [dataSaving, setDataSaving] = useState<boolean>(false);
-
+  const [activeStep, setActiveStep] = useState(1);
   const [selectedIcon, setSelectedIcon] = useState<string | null>('twitter');
 
+  const totalSteps = 4;
+  const progress = (activeStep / totalSteps) * 100;
 
   const handleProjectChange = (index: number, field: keyof typeof projects[number], value: string) => {
     const newProjects = [...projects];
@@ -36,49 +36,85 @@ export default function CreatePage() {
   };
 
   const handleProjectAvatarChange = (index: number, file: File) => {
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        variant: 'destructive',
+        description: 'Image size should be less than 5MB'
+      });
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        variant: 'destructive',
+        description: 'Please select a valid image file'
+      });
+      return;
+    }
+
     const newProjects = [...projects];
     const reader = new FileReader();
     reader.onloadend = () => {
       newProjects[index].avatar = reader.result as string;
       setProjects(newProjects);
+      toast({
+        description: 'Project image updated successfully! 🖼️'
+      });
+    };
+    reader.onerror = () => {
+      toast({
+        variant: 'destructive',
+        description: 'Error reading image file'
+      });
     };
     reader.readAsDataURL(file);
   };
 
   const addProject = () => {
-    setProjects([...projects, { name: '', link: '', description:'', avatar: null }]);
+    setProjects([...projects, { name: '', link: '', description: '', avatar: null }]);
   };
 
-  const deleteProject = (projectId: string | undefined, index: number) => {
-    if (!projectId) {
-      // If projectId is empty, simply remove the project from the UI without sending a delete request
-      const newProjects = projects.filter((_, i) => i !== index);
-      setProjects(newProjects);
-      toast({ description: 'Project removed locally' });
-      return;
-    }
-  
-    // Proceed to send the delete request if projectId exists
-    try {
-      axios.delete('/api/delete-project', {
-        data: { projectId },
-      });
-      const newProjects = projects.filter((_, i) => i !== index);
-      setProjects(newProjects);
-      toast({ variant:'destructive',  description: 'Project Deleted' });
-    } catch (err) {
-      console.error(err);
-      toast({ variant: 'destructive', description: 'Error deleting' });
-    }
+  const deleteProject = (index: number) => {
+    const newProjects = projects.filter((_, i) => i !== index);
+    setProjects(newProjects);
+    toast({ description: 'Project removed' });
   };
-  
 
   const handleUserAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          variant: 'destructive',
+          description: 'Image size should be less than 5MB'
+        });
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          variant: 'destructive',
+          description: 'Please select a valid image file'
+        });
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setUserAvatar(reader.result as string);
+        toast({
+          description: 'Profile picture updated successfully! 📸'
+        });
+      };
+      reader.onerror = () => {
+        toast({
+          variant: 'destructive',
+          description: 'Error reading image file'
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -100,26 +136,22 @@ export default function CreatePage() {
       const hasNameOrLink = project.name?.trim() || project.link?.trim();
       const hasAvatar = project.avatar?.trim();
       const hasDescription = project.description?.trim();
-  
-      // Check if there's a name or link without an avatar
-      const missingAvatar = hasNameOrLink && !hasAvatar;
-      
-      // Check if there's an avatar without a name or link
-      const missingNameOrLink = hasAvatar && !(project.name?.trim() && project.link?.trim());
 
-      const missingDescription = hasNameOrLink && !hasDescription
-  
-      return missingAvatar || missingNameOrLink;
+      const missingAvatar = hasNameOrLink && !hasAvatar;
+      const missingNameOrLink = hasAvatar && !(project.name?.trim() && project.link?.trim());
+      const missingDescription = hasNameOrLink && !hasDescription;
+
+      return missingAvatar || missingNameOrLink || missingDescription;
     });
-  
+
     if (projectsWithMissingInfo) {
-      toast({ 
-        variant: 'destructive', 
-        description: "Please ensure each project has a name, link, avatar and description ." 
+      toast({
+        variant: 'destructive',
+        description: "Please ensure each project has a name, link, avatar and description."
       });
       return;
     }
-  
+
     try {
       const userData: any = {
         email: session?.user?.email,
@@ -133,24 +165,24 @@ export default function CreatePage() {
         skills: skills.length ? skills : undefined,
         socials: socials,
       };
-  
+
       Object.keys(userData).forEach((key) => {
         if (userData[key] === undefined) {
           delete userData[key];
         }
       });
-  
+
       setDataSaving(true);
       await axios.post('/api/save-data', userData);
-      toast({ description: "Saved" });
+      toast({ description: "Portfolio saved successfully! 🎉" });
     } catch (error) {
       console.error('Error saving user data', error);
-      toast({ variant: 'destructive', description: "Error saving" });
+      toast({ variant: 'destructive', description: "Error saving portfolio" });
     } finally {
       setDataSaving(false);
     }
   };
-  
+
   const renderInputField = () => {
     switch (selectedIcon) {
       case 'twitter':
@@ -159,7 +191,7 @@ export default function CreatePage() {
             placeholder="Link to your Twitter"
             value={socials.twitter || ''}
             onChange={(e) => setSocials((prev) => ({ ...prev, twitter: e.target.value }))}
-            className="flex-1"
+            className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
           />
         );
       case 'github':
@@ -168,7 +200,7 @@ export default function CreatePage() {
             placeholder="Link to your GitHub"
             value={socials.github || ''}
             onChange={(e) => setSocials((prev) => ({ ...prev, github: e.target.value }))}
-            className="flex-1"
+            className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
           />
         );
       case 'instagram':
@@ -177,7 +209,7 @@ export default function CreatePage() {
             placeholder="Link to your Instagram"
             value={socials.instagram || ''}
             onChange={(e) => setSocials((prev) => ({ ...prev, instagram: e.target.value }))}
-            className="flex-1"
+            className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
           />
         );
       case 'youtube':
@@ -186,7 +218,7 @@ export default function CreatePage() {
             placeholder="Link to your YouTube"
             value={socials.youtube || ''}
             onChange={(e) => setSocials((prev) => ({ ...prev, youtube: e.target.value }))}
-            className="flex-1"
+            className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
           />
         );
       case 'linkedin':
@@ -195,7 +227,7 @@ export default function CreatePage() {
             placeholder="Link to your LinkedIn"
             value={socials.linkedin}
             onChange={(e) => setSocials((prev) => ({ ...prev, linkedin: e.target.value }))}
-            className="flex-1"
+            className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
           />
         );
       default:
@@ -203,175 +235,345 @@ export default function CreatePage() {
     }
   };
 
+  const nextStep = () => {
+    if (activeStep < totalSteps) setActiveStep(activeStep + 1);
+  };
+
+  const prevStep = () => {
+    if (activeStep > 1) setActiveStep(activeStep - 1);
+  };
+
+  if (loading) {
+    return <SkeletonLoader />;
+  }
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-5 mx-2 rounded-lg min-w-full ">
-      <div className="flex flex-col p-4 md:p-10 rounded-lg space-y-4 bg-gray-100">
-        {loading?(
-          <SkeletonLoader/>
-        ):(
-          <>
-        <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
-          <div className="relative group cursor-pointer">
-            <Avatar className="cursor-pointer">
-              <AvatarImage className="cursor-pointer" src={userAvatar} alt="User Avatar" />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleUserAvatarChange}
-                className="absolute inset-0 opacity-0 cursor-pointer"
-              />
-            </Avatar>
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold text-white">Build Your Portfolio</h1>
+            <span className="text-gray-300">Step {activeStep} of {totalSteps}</span>
           </div>
-          <Input
-            placeholder="Change your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="flex-1"
-          />
-        </div>
-        <Textarea placeholder="I love HTML" value={bio} onChange={(e) => setBio(e.target.value)} />
-          <AIBio/>
-        
-        {/* Social Media Links */}
-        <div className="mt-4">
-          <h3 className="font-semibold mb-2">Social Links</h3>
-          <div className="flex space-x-4">
-            <Twitter 
-              className="cursor-pointer" 
-              onClick={() => setSelectedIcon('twitter')} 
-            />
-            <Github 
-              className="cursor-pointer" 
-              onClick={() => setSelectedIcon('github')} 
-            />
-            <Instagram 
-              className="cursor-pointer" 
-              onClick={() => setSelectedIcon('instagram')} 
-            />
-            <Youtube 
-              className="cursor-pointer" 
-              onClick={() => setSelectedIcon('youtube')} 
-            />
-            <Linkedin 
-              className="cursor-pointer" 
-              onClick={() => setSelectedIcon('linkedin')} 
+          <div className="w-full bg-gray-800 rounded-full h-3">
+            <motion.div
+              className="bg-gradient-to-r from-gray-600 to-gray-400 h-3 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5 }}
             />
           </div>
-          {/* Render the selected input field */}
-          {selectedIcon && (
-            <div className="mt-4 flex items-center space-x-2">
-              {renderInputField()}
-              <Button onClick={() => setSelectedIcon(null)} className=" bg-blue-400  text-white">
-                Done
-              </Button>
-            </div>
-          )}
         </div>
 
-        <Button onClick={addProject}>Add Project</Button>
-            {projects.map((project, index) => (
-              <React.Fragment key={index}>
-                <div className="flex flex-col space-y-4 mt-4">
-                  <div className="flex flex-col space-y-4">
-                    {/* Project Name and Description */}
-                    <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-2">
-                      <Input
-                        placeholder="Project Name"
-                        value={project.name}
-                        onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
-                        className="flex-1"
-                      />
-                      <div className="flex-none flex space-x-2">
-                        <div className="relative group">
-                          <Avatar className="cursor-pointer">
-                            {project.avatar ? (
-                              <AvatarImage src={project.avatar} alt={`Project ${index + 1} Avatar`} />
-                            ) : (
-                              <div className="flex items-center justify-center w-full h-full text-gray-400">
-                                <IconCamera className="cursor-pointer" />
-                              </div>
-                            )}
-                          </Avatar>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                              if (e.target.files?.[0]) handleProjectAvatarChange(index, e.target.files[0]);
-                            }}
-                            className="absolute inset-0 opacity-0 cursor-pointer"
-                          />
+        <div className="grid grid-cols-1 gap-8">
+          {/* Main Form - Full Width */}
+          <div className="w-full">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeStep}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="bg-gray-900/50 backdrop-blur-md rounded-3xl p-8 border border-gray-800"
+              >
+                {/* Step 1: Basic Info */}
+                {activeStep === 1 && (
+                  <div className="space-y-6">
+                    <div className="text-center mb-8">
+                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <User className="h-10 w-10 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white mb-2">Tell Us About Yourself</h2>
+                      <p className="text-gray-300">Let&apos;s start with the basics</p>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
+                      <div className="relative group cursor-pointer">
+                        <Avatar className="w-24 h-24 cursor-pointer border-4 border-gray-700 hover:border-gray-500 transition-all">
+                          <AvatarImage className="cursor-pointer" src={userAvatar} alt="User Avatar" />
+                          {!userAvatar && (
+                            <div className="flex items-center justify-center w-full h-full text-gray-400">
+                              <IconCamera className="h-8 w-8" />
+                            </div>
+                          )}
+                        </Avatar>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleUserAvatarChange}
+                          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                          style={{ zIndex: 10 }}
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">Upload Photo</span>
                         </div>
-                        <Button
-                        //@ts-ignore
-                          onClick={() => deleteProject(project.id, index)}
-                          className="bg-red-400 hover:bg-red-500 flex items-center"
-                        >
-                          <Trash className="" /> 
-                        </Button>
+                        {/* Click indicator */}
+                        <div className="absolute -bottom-2 -right-2 bg-gray-600 rounded-full p-1 border-2 border-gray-800">
+                          <IconCamera className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                      <div className="flex-1 space-y-4">
+                        <div className="text-center md:text-left mb-2">
+                          <p className="text-gray-400 text-sm">Click on the profile picture to upload your photo</p>
+                        </div>
+                        <Input
+                          placeholder="Your full name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500 text-lg"
+                        />
+                        <Textarea
+                          placeholder="Tell us about yourself, your passion, and what drives you..."
+                          value={bio}
+                          onChange={(e) => setBio(e.target.value)}
+                          className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500 min-h-[100px]"
+                        />
+                        <div className="flex items-center space-x-2">
+                          <AIBio />
+                          <span className="text-gray-300 text-sm">Use AI to generate a compelling bio</span>
+                        </div>
                       </div>
                     </div>
-                    <Input
-                      placeholder="Project Description"
-                      value={project.description}
-                      onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-                      className="w-full"
-                    />
                   </div>
-                  {/* Project Link */}
-                  <Input
-                    placeholder="Project Link"
-                    value={project.link}
-                    onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-                {/* Add a horizontal rule after each project except the last one */}
-                {index < projects.length - 1 && (
-                  <hr className="my-6 border-t border-gray-300" />
                 )}
-              </React.Fragment>
-            ))}
 
-        <div className="mt-4">
-          <h3 className="font-semibold mb-2">Skills</h3>
-          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-2 mb-4">
-            <Input
-              placeholder="Add a new skill"
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={addSkill}>Add</Button>
-          </div>
-          <div className="flex flex-wrap">
-            {skills.map((skill, index) => (
-              <div key={index} className="bg-gray-200 rounded-full px-4 py-2 m-1 flex items-center">
-                <span>{skill}</span>
-                <button onClick={() => removeSkill(skill)} className="ml-2 text-red-500">
-                  ×
-                </button>
-              </div>
-            ))}
+                {/* Step 2: Social Links */}
+                {activeStep === 2 && (
+                  <div className="space-y-6">
+                    <div className="text-center mb-8">
+                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Globe className="h-10 w-10 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white mb-2">Connect Your Socials</h2>
+                      <p className="text-gray-300">Help people find you online</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                      {[
+                        { icon: Twitter, key: 'twitter', color: 'text-blue-400' },
+                        { icon: Github, key: 'github', color: 'text-gray-400' },
+                        { icon: Instagram, key: 'instagram', color: 'text-pink-400' },
+                        { icon: Youtube, key: 'youtube', color: 'text-red-400' },
+                        { icon: Linkedin, key: 'linkedin', color: 'text-blue-600' }
+                      ].map(({ icon: Icon, key, color }) => (
+                        <button
+                          key={key}
+                          onClick={() => setSelectedIcon(key)}
+                          className={`p-4 rounded-2xl border-2 transition-all ${
+                            selectedIcon === key
+                              ? 'border-gray-500 bg-gray-700'
+                              : 'border-gray-700 bg-gray-800 hover:border-gray-600'
+                          }`}
+                        >
+                          <Icon className={`h-8 w-8 mx-auto ${color}`} />
+                        </button>
+                      ))}
+                    </div>
+
+                    {selectedIcon && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center space-x-3"
+                      >
+                        {renderInputField()}
+                        <Button
+                          onClick={() => setSelectedIcon(null)}
+                          className="bg-gray-700 hover:bg-gray-600 text-white"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Done
+                        </Button>
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+
+                {/* Step 3: Projects */}
+                {activeStep === 3 && (
+                  <div className="space-y-6">
+                    <div className="text-center mb-8">
+                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileText className="h-10 w-10 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white mb-2">Showcase Your Projects</h2>
+                      <p className="text-gray-300">Highlight your best work</p>
+                      <p className="text-gray-400 text-sm mt-2">Click on project avatars to upload images</p>
+                    </div>
+
+                    <div className="space-y-6">
+                      {projects.map((project, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700"
+                        >
+                          <div className="flex items-start space-x-4">
+                            <div className="relative group cursor-pointer">
+                              <Avatar className="w-16 h-16 cursor-pointer border-2 border-gray-700 hover:border-gray-500 transition-all">
+                                {project.avatar ? (
+                                  <AvatarImage src={project.avatar} alt={`Project ${index + 1} Avatar`} />
+                                ) : (
+                                  <div className="flex items-center justify-center w-full h-full text-gray-400">
+                                    <IconCamera className="h-6 w-6" />
+                                  </div>
+                                )}
+                              </Avatar>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  if (e.target.files?.[0]) handleProjectAvatarChange(index, e.target.files[0]);
+                                }}
+                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                                style={{ zIndex: 10 }}
+                              />
+                              {/* Hover overlay for project avatars */}
+                              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs font-medium">Change</span>
+                              </div>
+                            </div>
+                            <div className="flex-1 space-y-3">
+                              <Input
+                                placeholder="Project name"
+                                value={project.name}
+                                onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
+                                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
+                              />
+                              <Textarea
+                                placeholder="Project description"
+                                value={project.description}
+                                onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
+                                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
+                              />
+                              <Input
+                                placeholder="Project link"
+                                value={project.link}
+                                onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
+                                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
+                              />
+                            </div>
+                            <Button
+                              onClick={() => deleteProject(index)}
+                              variant="ghost"
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            >
+                              <Trash2 className="h-5 w-5" />
+                            </Button>
+                          </div>
+                        </motion.div>
+                      ))}
+
+                      <Button
+                        onClick={addProject}
+                        variant="outline"
+                        className="w-full border-dashed border-gray-600  bg-gray-800 text-white hover:border-gray-500"
+                      >
+                        <Plus className="h-5 w-5 mr-2" />
+                        Add Another Project
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 4: Skills & Username */}
+                {activeStep === 4 && (
+                  <div className="space-y-6">
+                    <div className="text-center mb-8">
+                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Code className="h-10 w-10 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white mb-2">Final Touches</h2>
+                      <p className="text-gray-300">Add your skills and claim your username</p>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-lg font-semibold text-white mb-4">Your Skills</h3>
+                        <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 mb-4">
+                          <Input
+                            placeholder="Add a new skill"
+                            value={newSkill}
+                            onChange={(e) => setNewSkill(e.target.value)}
+                            className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
+                            onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                          />
+                          <Button onClick={addSkill} className="bg-gray-700 hover:bg-gray-600 text-white">
+                            Add
+                          </Button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {skills.map((skill, index) => (
+                            <motion.span
+                              key={index}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-full px-4 py-2 flex items-center"
+                            >
+                              {skill}
+                              <button
+                                onClick={() => removeSkill(skill)}
+                                className="ml-2 text-white/80 hover:text-white"
+                              >
+                                ×
+                              </button>
+                            </motion.span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <UsernameInput />
+                    </div>
+                  </div>
+                )}
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-8 pt-6 border-t border-gray-700">
+                  <Button
+                    onClick={prevStep}
+                    variant="outline"
+                    disabled={activeStep === 1}
+                    className="border-gray-600  bg-gray-800 text-white disabled:opacity-50"
+                  >
+                    Previous
+                  </Button>
+
+                  {activeStep < totalSteps ? (
+                    <Button
+                      onClick={nextStep}
+                      className="bg-gray-700 hover:bg-gray-600 text-white"
+                    >
+                      Next Step
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={dataSaving}
+                      className="bg-gray-700 hover:bg-gray-600 text-white"
+                    >
+                      {dataSaving ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Save Portfolio
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
-        <UsernameInput/>
-        <Button  onClick={handleSubmit} disabled={dataSaving}>
-          {dataSaving ? (
-            <div className='flex' >
-              <Loader2 className='animate-spin'/>
-              <p className='px-1' >Wait... patience is the key to success</p>
-            </div>
-            
-            
-          ) : (
-            'Save'
-          )}
-        </Button>
-        </>)}
-        
-        <Mypage/>
       </div>
     </div>
-
   );
 }

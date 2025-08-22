@@ -62,21 +62,21 @@ export default function UsernameInput() {
 
     return (
         <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
-            <div className="flex items-center bg-gray-900 text-gray-300 rounded-md px-4 py-2 w-full sm:w-auto">
+            <div className="flex items-center bg-gray-800 text-gray-300 rounded-md px-4 py-2 w-full sm:w-auto border border-gray-600">
                 <span className="text-white">devpage.in/</span>
                 <input
                     type="text"
                     value={username}
                     onChange={handleChange}
                     placeholder="yourname"
-                    className="bg-transparent outline-none text-gray-400 ml-1 w-full"
+                    className="bg-transparent outline-none text-gray-300 ml-1 w-full placeholder-gray-500"
                 />
             </div>
             <motion.div variants={buttonVariants} whileHover={'hover'} className=' w-28 sm:w-auto'>
                 <button
                     onClick={handleSubmit}
                     disabled={claiming}
-                    className="bg-blue-800 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 w-full sm:w-auto">
+                    className="bg-gray-700 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 w-full sm:w-auto border border-gray-600">
                     {claiming?(
                         <Loader className=' animate-spin ' />
                     ):(
@@ -85,6 +85,6 @@ export default function UsernameInput() {
 
                 </button>
             </motion.div>
-            {availability && <p className="font-semibold w-full sm:w-auto text-center sm:text-left">{availability}</p>}
+            {availability && <p className="font-semibold w-full sm:w-auto text-center sm:text-left text-gray-300">{availability}</p>}
         </div>
     )}

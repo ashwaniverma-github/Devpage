@@ -53,18 +53,18 @@ export default function Mypage() {
     }, [session, status]); // Add session and status as dependencies
 
     if (status === 'loading') {
-        return <div className="text-black" >Loading...</div>;
+        return <div className="text-gray-300" >Loading...</div>;
     }
 
     if (!session) {
-        return <div>You need to be logged in to view this page.</div>;
+        return <div className="text-gray-300">You need to be logged in to view this page.</div>;
     }
 
     return <div>
         <div>
     {username && (
         <Link href={`${pageUrl}/${username}`} target="_blank" rel="noopener noreferrer">
-            <motion.button  variants={buttonVariants} whileHover={'hover'} className="bg-blue-400 p-3 font-semibold text-black hover:bg-blue-500 rounded-md ">
+            <motion.button  variants={buttonVariants} whileHover={'hover'} className="bg-gray-700 p-3 font-semibold text-white hover:bg-gray-600 rounded-md border border-gray-600">
                 
                 View mypage {'->'}
 

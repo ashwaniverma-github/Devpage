@@ -1,76 +1,123 @@
-import { signOut } from "next-auth/react";
-import { Button } from "./ui/button";
-import Link from "next/link";
-import { useState } from "react";
-import { Menu, X } from "lucide-react"; // Assuming you're using lucide-react for icons
+'use client'
+import { signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { Button } from './ui/button'
+import { Palette, FileText, LogOut, Play, Code, Eye } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
 
 interface DashbarProps {
-  onNavigate: (componentName: string) => void;
-  onClick: any;
+    onNavigate: (componentName: string) => void;
+    onClick: () => void;
 }
 
 export default function Dashbar({ onNavigate, onClick }: DashbarProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const router = useRouter()
+    const { data: session } = useSession()
+    const [username, setUsername] = useState<string | null>(null)
+    const [isLoadingUsername, setIsLoadingUsername] = useState(false)
+    const pageUrl = process.env.PAGE_URL || ""
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const fetchUsername = useCallback(async () => {
+        try {
+            setIsLoadingUsername(true)
+            const email = session?.user?.email
+            const response = await fetch('/api/get-username', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
 
-  return (
-    <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-lg">
-      <div className="px-4 py-3">
-        <div className="flex justify-between items-center">
-          <Link href={'/'}>
-            <h1 className="font-bold text-xl">Devpage</h1>
-          </Link>
-          
-          <div className="md:hidden">
-            <button onClick={toggleMenu} className="p-2">
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-          <div className="hidden md:flex items-center space-x-4">
-            <NavItems onNavigate={onNavigate} />
-            <ActionButtons onClick={onClick} />
-          </div>
+            if (response.ok) {
+                const data = await response.json()
+                setUsername(data.username)
+            } else {
+                console.error('Failed to fetch username')
+            }
+        } catch (error) {
+            console.error('Error fetching username:', error)
+        } finally {
+            setIsLoadingUsername(false)
+        }
+    }, [session])
+
+    useEffect(() => {
+        if (session?.user?.email) {
+            fetchUsername()
+        }
+    }, [session, fetchUsername])
+
+    const handleViewPage = async () => {
+        if (username) {
+            // Open portfolio page in new tab
+            window.open(`${pageUrl}/${username}`, '_blank')
+        } else {
+            // If username not available, try to fetch it first
+            await fetchUsername()
+            if (username) {
+                window.open(`${pageUrl}/${username}`, '_blank')
+            }
+        }
+    }
+
+    const handleSignOut = async () => {
+        await signOut({ redirect: false })
+        router.push('/')
+    }
+
+    return (
+        <div className="fixed top-0 left-0 right-0 bg-black/20 backdrop-blur-md border-b border-gray-800 z-50">
+            <div className="flex items-center justify-between px-6 py-4">
+                <div className="flex items-center space-x-6">
+                    <div className="flex items-center space-x-2">
+                        <Code className="h-8 w-8 text-gray-300" />
+                        <span className="text-2xl font-bold text-white">Devpage</span>
+                    </div>
+                    
+                    <nav className="flex space-x-2">
+                        <Button
+                            variant="ghost"
+                            onClick={() => onNavigate('page')}
+                            className="flex items-center space-x-2 text-white hover:bg-gray-800 hover:text-gray-300 transition-all"
+                        >
+                            <FileText className="h-4 w-4" />
+                            <span>Portfolio</span>
+                        </Button>
+                        
+                        <Button
+                            variant="ghost"
+                            onClick={() => onNavigate('style')}
+                            className="flex items-center space-x-2 text-white hover:bg-gray-800 hover:text-gray-300 transition-all"
+                        >
+                            <Palette className="h-4 w-4" />
+                            <span>Style</span>
+                        </Button>
+                    </nav>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                    <Button
+                        onClick={handleViewPage}
+                        disabled={isLoadingUsername}
+                        className="bg-gray-800 hover:bg-gray-700 text-white flex items-center space-x-2 shadow-lg hover:shadow-gray-500/25 transition-all border border-gray-600 disabled:opacity-50"
+                    >
+                        {isLoadingUsername ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                            <Eye className="h-4 w-4" />
+                        )}
+                        <span>{isLoadingUsername ? 'Loading...' : 'View Page'}</span>
+                    </Button>
+                    
+                    
+                    <Button
+                        onClick={handleSignOut}
+                        className="flex items-center hover:bg-gray-700 space-x-2 border-gray-600  bg-gray-800 text-white transition-all"
+                    >
+                        <LogOut className="h-4 w-4" />
+                        <span>Sign Out</span>
+                    </Button>
+                </div>
+            </div>
         </div>
-        {isMenuOpen && (
-          <div className="mt-4 md:hidden">
-            <NavItems onNavigate={onNavigate} />
-            <ActionButtons onClick={onClick} />
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    )
 }
-
-const NavItems = ({ onNavigate }: { onNavigate: (componentName: string) => void }) => (
-  <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4">
-    <button
-      onClick={() => onNavigate("page")}
-      className="font-semibold text-lg hover:bg-slate-100 p-2 rounded-lg"
-    >
-      Page
-    </button>
-    <button
-      onClick={() => onNavigate("style")}
-      className="font-semibold text-lg hover:bg-slate-100 p-2 rounded-lg"
-    >
-      Style
-    </button>
-  </div>
-);
-
-const ActionButtons = ({ onClick }: { onClick: any }) => (
-  <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2 mt-4 md:mt-0">
-    <div className="hover:bg-slate-100 p-2 rounded-lg w-full md:w-auto">
-      <button onClick={() => signOut()} className="font-bold text-base w-full md:w-auto">
-        Logout
-      </button>
-    </div>
-    <Link href="" className="w-full md:w-auto">
-      <Button onClick={onClick} className="text-lg rounded-xl w-full md:w-auto">
-        Deploy
-      </Button>
-    </Link>
-  </div>
-);

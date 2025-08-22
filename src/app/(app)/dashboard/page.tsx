@@ -86,31 +86,13 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
             <Dashbar onNavigate={handleNavigation} onClick={handleDeploy} />
-            <div className="flex flex-grow mt-28">
-                <div className="flex-grow overflow-auto">
+            <div className="flex flex-grow pt-28">
+                <div className="flex-grow overflow-auto px-6">
                     {activeComponent === 'page' && <CreatePage />}
                     {activeComponent === 'style' && <Style />}
                 </div>
-
-                {activeComponent!='style' && (
-                    <div className="hidden lg:block fixed top-20 mt-2 right-40 ">
-                    <div className="mockup-phone size-90 ">
-                        <div className="camera"></div>
-                        <div className="display">
-                            <div className="artboard artboard-demo phone-1">
-                                {iframeSrc?(
-                                    <iframe src={iframeSrc} className="w-full h-full" />
-                                ):(
-                                    <span>Save before deploying</span>
-                                )}
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                )}
             </div>
         </div>
     )
