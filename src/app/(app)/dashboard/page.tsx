@@ -88,8 +88,8 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
             <Dashbar onNavigate={handleNavigation} onClick={handleDeploy} />
-            <div className="flex flex-grow pt-28">
-                <div className="flex-grow overflow-auto px-6">
+            <div className="flex flex-grow pt-20 sm:pt-24 md:pt-28">
+                <div className="flex-grow overflow-auto px-3 sm:px-4 md:px-6">
                     {activeComponent === 'page' && <CreatePage />}
                     {activeComponent === 'style' && <Style />}
                 </div>

@@ -248,17 +248,17 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-6">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-3 sm:p-4 md:p-">
       <div className="max-w-6xl mx-auto">
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-white">Build Your Portfolio</h1>
-            <span className="text-gray-300">Step {activeStep} of {totalSteps}</span>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white text-center sm:text-left">Build Your Portfolio</h1>
+            <span className="text-gray-300 text-center sm:text-right text-sm sm:text-base">Step {activeStep} of {totalSteps}</span>
           </div>
-          <div className="w-full bg-gray-800 rounded-full h-3">
+          <div className="w-full bg-gray-800 rounded-full h-2 sm:h-3">
             <motion.div
-              className="bg-gradient-to-r from-gray-600 to-gray-400 h-3 rounded-full"
+              className="bg-gradient-to-r from-gray-600 to-gray-400 h-2 sm:h-3 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5 }}
@@ -266,7 +266,7 @@ export default function CreatePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8">
           {/* Main Form - Full Width */}
           <div className="w-full">
             <AnimatePresence mode="wait">
@@ -276,26 +276,26 @@ export default function CreatePage() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="bg-gray-900/50 backdrop-blur-md rounded-3xl p-8 border border-gray-800"
+                className="bg-gray-900/50 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-800"
               >
                 {/* Step 1: Basic Info */}
                 {activeStep === 1 && (
-                  <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <User className="h-10 w-10 text-white" />
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="text-center mb-6 sm:mb-8">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <User className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                       </div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Tell Us About Yourself</h2>
-                      <p className="text-gray-300">Let&apos;s start with the basics</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Tell Us About Yourself</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">Let&apos;s start with the basics</p>
                     </div>
 
-                    <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
+                    <div className="flex flex-col items-center sm:items-start space-y-4 sm:space-y-2 sm:space-x-6">
                       <div className="relative group cursor-pointer">
-                        <Avatar className="w-24 h-24 cursor-pointer border-4 border-gray-700 hover:border-gray-500 transition-all">
+                        <Avatar className="w-20 h-20 sm:w-24 sm:h-24 cursor-pointer border-4 border-gray-700 hover:border-gray-500 transition-all">
                           <AvatarImage className="cursor-pointer" src={userAvatar} alt="User Avatar" />
                           {!userAvatar && (
                             <div className="flex items-center justify-center w-full h-full text-gray-400">
-                              <IconCamera className="h-8 w-8" />
+                              <IconCamera className="h-6 w-6 sm:h-8 sm:w-8" />
                             </div>
                           )}
                         </Avatar>
@@ -307,32 +307,32 @@ export default function CreatePage() {
                           style={{ zIndex: 10 }}
                         />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm font-medium">Upload Photo</span>
+                          <span className="text-white text-xs sm:text-sm font-medium">Upload Photo</span>
                         </div>
                         {/* Click indicator */}
                         <div className="absolute -bottom-2 -right-2 bg-gray-600 rounded-full p-1 border-2 border-gray-800">
-                          <IconCamera className="h-4 w-4 text-white" />
+                          <IconCamera className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                         </div>
                       </div>
-                      <div className="flex-1 space-y-4">
-                        <div className="text-center md:text-left mb-2">
-                          <p className="text-gray-400 text-sm">Click on the profile picture to upload your photo</p>
+                      <div className="flex-1 space-y-4 w-full">
+                        <div className="text-center p-2 sm:text-left mb-2">
+                          <p className="text-gray-400  text-xs sm:text-sm">Click on the profile picture to upload your photo</p>
                         </div>
                         <Input
                           placeholder="Your full name"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500 text-lg"
+                          className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500 text-base sm:text-lg"
                         />
                         <Textarea
                           placeholder="Tell us about yourself, your passion, and what drives you..."
                           value={bio}
                           onChange={(e) => setBio(e.target.value)}
-                          className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500 min-h-[100px]"
+                          className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500 min-h-[80px] sm:min-h-[100px]"
                         />
-                        <div className="flex items-center space-x-2">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
                           <AIBio />
-                          <span className="text-gray-300 text-sm">Use AI to generate a compelling bio</span>
+                          <span className="text-gray-300 text-xs sm:text-sm text-center sm:text-left">Use AI to create compelling bio</span>
                         </div>
                       </div>
                     </div>
@@ -341,16 +341,16 @@ export default function CreatePage() {
 
                 {/* Step 2: Social Links */}
                 {activeStep === 2 && (
-                  <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Globe className="h-10 w-10 text-white" />
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="text-center mb-6 sm:mb-8">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Globe className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                       </div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Connect Your Socials</h2>
-                      <p className="text-gray-300">Help people find you online</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Connect Your Socials</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">Help people find you online</p>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4 mb-6">
                       {[
                         { icon: Twitter, key: 'twitter', color: 'text-blue-400' },
                         { icon: Github, key: 'github', color: 'text-gray-400' },
@@ -361,13 +361,13 @@ export default function CreatePage() {
                         <button
                           key={key}
                           onClick={() => setSelectedIcon(key)}
-                          className={`p-4 rounded-2xl border-2 transition-all ${
+                          className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all ${
                             selectedIcon === key
                               ? 'border-gray-500 bg-gray-700'
                               : 'border-gray-700 bg-gray-800 hover:border-gray-600'
                           }`}
                         >
-                          <Icon className={`h-8 w-8 mx-auto ${color}`} />
+                          <Icon className={`h-6 w-6 sm:h-8 sm:w-8 mx-auto ${color}`} />
                         </button>
                       ))}
                     </div>
@@ -376,12 +376,12 @@ export default function CreatePage() {
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center space-x-3"
+                        className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3"
                       >
                         {renderInputField()}
                         <Button
                           onClick={() => setSelectedIcon(null)}
-                          className="bg-gray-700 hover:bg-gray-600 text-white"
+                          className="bg-gray-700 hover:bg-gray-600 text-white w-full sm:w-auto"
                         >
                           <CheckCircle className="h-4 w-4 mr-2" />
                           Done
@@ -393,26 +393,26 @@ export default function CreatePage() {
 
                 {/* Step 3: Projects */}
                 {activeStep === 3 && (
-                  <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <FileText className="h-10 w-10 text-white" />
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="text-center mb-6 sm:mb-8">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <FileText className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                       </div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Showcase Your Projects</h2>
-                      <p className="text-gray-300">Highlight your best work</p>
-                      <p className="text-gray-400 text-sm mt-2">Click on project avatars to upload images</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Showcase Your Projects</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">Highlight your best work</p>
+                      <p className="text-gray-400 text-xs sm:text-sm mt-2">Click on project avatars to upload images</p>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       {projects.map((project, index) => (
                         <motion.div
                           key={index}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700"
+                          className="bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700"
                         >
-                          <div className="flex items-start space-x-4">
-                            <div className="relative group cursor-pointer">
+                          <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-4">
+                            <div className="relative group cursor-pointer self-center sm:self-start">
                               <Avatar className="w-16 h-16 cursor-pointer border-2 border-gray-700 hover:border-gray-500 transition-all">
                                 {project.avatar ? (
                                   <AvatarImage src={project.avatar} alt={`Project ${index + 1} Avatar`} />
@@ -436,7 +436,7 @@ export default function CreatePage() {
                                 <span className="text-white text-xs font-medium">Change</span>
                               </div>
                             </div>
-                            <div className="flex-1 space-y-3">
+                            <div className="flex-1 space-y-3 w-full">
                               <Input
                                 placeholder="Project name"
                                 value={project.name}
@@ -459,7 +459,7 @@ export default function CreatePage() {
                             <Button
                               onClick={() => deleteProject(index)}
                               variant="ghost"
-                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10 self-center sm:self-start"
                             >
                               <Trash2 className="h-5 w-5" />
                             </Button>
@@ -481,19 +481,19 @@ export default function CreatePage() {
 
                 {/* Step 4: Skills & Username */}
                 {activeStep === 4 && (
-                  <div className="space-y-6">
-                    <div className="text-center mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Code className="h-10 w-10 text-white" />
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="text-center mb-6 sm:mb-8">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-gray-600 to-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Code className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                       </div>
-                      <h2 className="text-2xl font-bold text-white mb-2">Final Touches</h2>
-                      <p className="text-gray-300">Add your skills and claim your username</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Final Touches</h2>
+                      <p className="text-gray-300 text-sm sm:text-base">Add your skills and claim your username</p>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       <div>
-                        <h3 className="text-lg font-semibold text-white mb-4">Your Skills</h3>
-                        <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 mb-4">
+                        <h3 className="text-base sm:text-lg font-semibold text-white mb-4 text-center sm:text-left">Your Skills</h3>
+                        <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mb-4">
                           <Input
                             placeholder="Add a new skill"
                             value={newSkill}
@@ -501,17 +501,17 @@ export default function CreatePage() {
                             className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-gray-500"
                             onKeyPress={(e) => e.key === 'Enter' && addSkill()}
                           />
-                          <Button onClick={addSkill} className="bg-gray-700 hover:bg-gray-600 text-white">
+                          <Button onClick={addSkill} className="bg-gray-700 hover:bg-gray-600 text-white w-full sm:w-auto">
                             Add
                           </Button>
                         </div>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                           {skills.map((skill, index) => (
                             <motion.span
                               key={index}
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
-                              className="bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-full px-4 py-2 flex items-center"
+                              className="bg-gradient-to-r from-gray-600 to-gray-400 text-white rounded-full px-3 sm:px-4 py-1 sm:py-2 flex items-center text-sm sm:text-base"
                             >
                               {skill}
                               <button
@@ -531,12 +531,12 @@ export default function CreatePage() {
                 )}
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between mt-8 pt-6 border-t border-gray-700">
+                <div className="flex flex-col sm:flex-row justify-between mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-700 space-y-3 sm:space-y-0">
                   <Button
                     onClick={prevStep}
                     variant="outline"
                     disabled={activeStep === 1}
-                    className="border-gray-600  bg-gray-800 text-white disabled:opacity-50"
+                    className="border-gray-600  bg-gray-800 text-white disabled:opacity-50 w-full sm:w-auto order-2 sm:order-1"
                   >
                     Previous
                   </Button>
@@ -544,7 +544,7 @@ export default function CreatePage() {
                   {activeStep < totalSteps ? (
                     <Button
                       onClick={nextStep}
-                      className="bg-gray-700 hover:bg-gray-600 text-white"
+                      className="bg-gray-700 hover:bg-gray-600 text-white w-full sm:w-auto order-1 sm:order-2"
                     >
                       Next Step
                       <ArrowRight className="h-4 w-4 ml-2" />
@@ -553,7 +553,7 @@ export default function CreatePage() {
                     <Button
                       onClick={handleSubmit}
                       disabled={dataSaving}
-                      className="bg-gray-700 hover:bg-gray-600 text-white"
+                      className="bg-gray-700 hover:bg-gray-600 text-white w-full sm:w-auto order-1 sm:order-2"
                     >
                       {dataSaving ? (
                         <>
